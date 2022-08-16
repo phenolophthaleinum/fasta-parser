@@ -34,10 +34,10 @@ tic = time.perf_counter()
 # X:/edwards2016/GCA_005890655.1_Cmin_1.0_genomic.fna.gz
 # X:/edwards2016/models/stats_test/random_train-species-dim_10-len_125.fasta
 # X:/edwards2016/models/wrapped/random_train-genus-dim_10-len_125.fasta
-with open('X:/edwards2016/models/wrapped/random_train-genus-dim_10-len_125.fasta', mode="rt") as file_obj:
+with gzip.open('X:/edwards2016/GCA_005890655.1_Cmin_1.0_genomic.fna.gz', mode="rt") as file_obj:
     with mmap.mmap(file_obj.fileno(), length=0, access=mmap.ACCESS_READ) as mmap_obj:
         # in case of compression:
-        # d_mmap = gzip.decompress(mmap_obj)
+        mmap_obj = gzip.decompress(mmap_obj)
         record_ind2_extended = [m.span() for m in re.finditer(fasta_re2, mmap_obj[::])]
         # print(str(mmap_obj[0:20]))
         # r = [fasta.Record(id=str(mmap_obj[record_ind2_extended[elem][0]:record_ind2_extended[elem][1]], 'utf-8'), seq=str(mmap_obj[record_ind2_extended[elem][1]:record_ind2_extended[elem + 1][0]], 'utf-8')) for elem in range(len(record_ind2_extended) - 1)]
