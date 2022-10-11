@@ -10,6 +10,7 @@ import pathlib
 import typing
 import zstandard
 import lz4.frame as lz4
+import mmap
 
 
 class Record:
@@ -20,6 +21,9 @@ class Record:
         seq (str)         : Sequence
         description (str) : Description line (defline)
     """
+
+    # saving a whopping 104 bytes from this
+    __slots__ = ('id', 'seq', 'desc')
 
     def __init__(self, id: str, seq: str, desc: typing.Optional[str] = None):
         """Creates a Record.
@@ -160,6 +164,8 @@ def parse(filename: typing.Union[str, pathlib.Path]):
     desc = None
     seq = []
     with get_open_func(filename)(filename, 'rt') as fh:
+        # with mmap.mmap(fh.fileno(), length=0, access=mmap.ACCESS_READ) as mmap_fh:
+        #     print(mmap_fh[:50])
         for line in fh:
             if line.startswith('>'):
                 if seq:
